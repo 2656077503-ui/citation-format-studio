@@ -1,5 +1,5 @@
 let uploadedOriginal=null;
-(async()=>{
+async function importWorkflowTransfer(){
  const key='literature-workflow-transfer-v1';
  if(new URLSearchParams(location.search).get('from')!=='finder')return;
  let data;try{data=JSON.parse(localStorage.getItem(key)||'null')}catch{msg('无法读取查找网站传来的文献。');return}
@@ -11,9 +11,9 @@ let uploadedOriginal=null;
   if(!p){missing++;p={id:'w'+Date.now()+Math.random().toString(36).slice(2),type:'article-journal',title:x.title.trim(),author:x.authors?[{literal:String(x.authors)}]:[],'container-title':String(x.journal||''),DOI:doi,abstract:String(x.abstract||'')};let y=Number(x.year);if(y>=1000&&y<=2100)p.issued={'date-parts':[[y]]}}
   papers.push(p);existing.add(id);imported++;
  }
- save();try{const saved=JSON.parse(localStorage.getItem('citation-studio-papers-v1')||'[]');if(saved.length>=papers.length)localStorage.removeItem(key)}catch{}
+ save();try{const saved=JSON.parse(localStorage.getItem('citation-studio-papers-v1')||'[]');if(window.citationAccountSave||saved.length>=papers.length)localStorage.removeItem(key)}catch{}
  history.replaceState(null,'',location.pathname+'#workflow');msg('已导入 '+imported+' 篇'+(duplicates?'，跳过 '+duplicates+' 篇重复文献':'')+(missing?'；其中 '+missing+' 篇出版信息不完整，请核对':'')+'。请选择格式，再到下方推荐引用位置。');
-})();
+}
 (()=>{
  const numeric=new Set(['china-national-standard-gb-t-7714-2025-numeric','china-national-standard-gb-t-7714-2015-numeric','elsevier-vancouver','american-medical-association','ieee','nature','american-chemical-society']);
  const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
