@@ -32,5 +32,5 @@
     papers=Array.isArray(data?.payload?.papers)?data.payload.papers:[];try{const pending=localStorage.getItem('citation-unsynced-'+user.id);if(pending){papers=JSON.parse(pending);failed=true;box.querySelector('#retrySync').hidden=false;status.textContent='检测到未同步的文献，请检查网络并点击重新同步。';}}catch{} placementPaperIds=papers.map(p=>p.id).join('|');button.textContent='我的账户';box.querySelector('#signOut').hidden=false;box.querySelector('#emailForm').hidden=true;box.querySelector('#codeForm').hidden=true;if(!failed)status.textContent='已登录：'+(user.email||''); loading=false;await finishLoading();
   }
   client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'||event==='SIGNED_OUT')setTimeout(()=>switchUser(session?.user||null),0)});
-  client.auth.getSession().then(({data})=>switchUser(data.session?.user||null)).catch(()=>{button.textContent='账户读取失败';status.textContent='无法读取登录状态，请检查网络并刷新。';});
+  client.auth.getSession().then(({data})=>{switchUser(data.session?.user||null);if(!data.session?.user&&!box.open)box.showModal();}).catch(()=>{button.textContent='账户读取失败';status.textContent='无法读取登录状态，请检查网络并刷新。';});
 })();
